@@ -44,15 +44,57 @@ class NearEarthObject:
         # You should coerce these values to their appropriate data type and
         # handle any edge cases, such as a empty name being represented by `None`
         # and a missing diameter being represented by `float('nan')`.
+
+        # parse the keyword parameters
         for key, value in info.items():
+            # assign the designation parameter
             if key.lower() == 'designation':
-                self.designation = value
+                # check the value of the parameter to avoid
+                # an inappropriate value
+                try:
+                    # if the type of value is not string
+                    self.designation = str(value)
+                except ValueError:
+                    # print the text message
+                    print(f'The type of {key} is not string')
+
+            # assign the name parameter
             elif key.lower() == 'name':
-                self.name = value
+                # check the value of the parameter to avoid
+                # an inappropriate or none value
+                if len(value) != 0:
+                    try:
+                        # if the type of value is not string
+                        self.name = str(value)
+                    except ValueError:
+                        # print the text message
+                        print(f'The type of {key} is not string')
+                else:
+                    # if the value is none, set the value to 'None' (string)
+                    self.name = 'None'
+
+            # assign the diameter parameter
             elif key.lower() == 'diameter':
-                self.diameter = value
+                # check the value of the parameter to avoid
+                # an inappropriate or none value
+                if len(value) != 0:
+                    try:
+                        # if the type of value is not float
+                        self.diameter = float(value)
+                    except ValueError:
+                        # print the text message
+                        print(f'The type of {key} is not float')
+
+            # assign the hazardous parameter
             elif key.lower() == 'hazardous':
-                self.hazardous = value
+                # check the value of the parameter to avoid
+                # an inappropriate value
+                try:
+                    # if the type of value is not bool
+                    self.hazardous = bool(value)
+                except ValueError:
+                    # print the text message
+                    print(f'The type of {key} is not bool')
 
         # Create an empty initial collection of linked approaches.
         self.approaches = []
@@ -61,7 +103,7 @@ class NearEarthObject:
     def fullname(self):
         """Return a representation of the full name of this NEO."""
         # TODO: Use self.designation and self.name to build a fullname for this object.
-        return ''
+        return f'{self.designation} {self.name}'
 
     def __str__(self):
         """Return `str(self)`."""
@@ -72,7 +114,7 @@ class NearEarthObject:
         if self.hazardous:
             return f'NEO {self.name} has a diameter of {self.diameter} km and is potentially hazardous.'
         else:
-            return f'NEO {self.name} has a diameter of {self.diameter} km and is  not potentially hazardous.'
+            return f'NEO {self.name} has a diameter of {self.diameter} km and is not potentially hazardous.'
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
@@ -104,10 +146,53 @@ class CloseApproach:
         # onto attributes named `_designation`, `time`, `distance`, and `velocity`.
         # You should coerce these values to their appropriate data type and handle any edge cases.
         # The `cd_to_datetime` function will be useful.
-        self._designation = ''
-        self.time = None  # TODO: Use the cd_to_datetime function for this attribute.
-        self.distance = 0.0
-        self.velocity = 0.0
+
+        # parse the keyword parameters
+        for key, value in info.items():
+            # assign the designation parameter
+            if key.lower() == 'designation':
+                # check the value of the parameter to avoid
+                # an inappropriate value
+                try:
+                    # if the type of value is not string
+                    self._designation = str(value)
+                except ValueError:
+                    # print the text message
+                    print(f'The type of {key} is not string')
+
+            # assign the time parameter
+            elif key.lower() == 'time':
+                # check the value of the parameter to avoid
+                # an inappropriate value
+                try:
+                    # if the type of value is not string
+                    self.time = str(value)
+                    self.time = cd_to_datetime(self.time)
+                except ValueError:
+                    # print the text message
+                    print(f'The type of {key} is not string')
+
+            # assign the distance parameter
+            elif key.lower() == 'distance':
+                # check the value of the parameter to avoid
+                # an inappropriate value
+                try:
+                    # if the type of value is not float
+                    self.distance = float(value)
+                except ValueError:
+                    # print the text message
+                    print(f'The type of {key} is not float')
+
+            # assign the velocity parameter
+            elif key.lower() == 'velocity':
+                # check the value of the parameter to avoid
+                # an inappropriate value
+                try:
+                    # if the type of value is not float
+                    self.velocity = float(value)
+                except ValueError:
+                    # print the text message
+                    print(f'The type of {key} is not float')
 
         # Create an attribute for the referenced NEO, originally None.
         self.neo = None
@@ -128,14 +213,14 @@ class CloseApproach:
         # TODO: Use this object's `.time` attribute and the `datetime_to_str` function to
         # build a formatted representation of the approach time.
         # TODO: Use self.designation and self.name to build a fullname for this object.
-        return ''
+        return datetime_to_str(self.time)
 
     def __str__(self):
         """Return `str(self)`."""
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"A CloseApproach ..."
+        return f"A CloseApproach {self._designation} = {self.distance}, velocity is {self.velocity}"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
