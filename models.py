@@ -48,7 +48,7 @@ class NearEarthObject:
         # parse the keyword parameters
         for key, value in info.items():
             # assign the designation parameter
-            if key.lower() == 'designation':
+            if key.lower() == 'pdes':
                 # check the value of the parameter to avoid
                 # an inappropriate value
                 try:
@@ -80,24 +80,26 @@ class NearEarthObject:
                 if len(value) != 0:
                     try:
                         # if the type of value is not float
-                        self.diameter = float(value)
+                        self.diameter = str(value)
                     except ValueError:
                         # print the text message
                         print(f'The type of {key} is not float')
+                else:
+                    self.diameter = float('nan')
 
             # assign the hazardous parameter
-            elif key.lower() == 'hazardous':
+            elif key.lower() == 'pha':
                 # check the value of the parameter to avoid
                 # an inappropriate value
                 try:
                     # if the type of value is not bool
-                    self.hazardous = bool(value)
+                    self.hazardous = str(value)
                 except ValueError:
                     # print the text message
-                    print(f'The type of {key} is not bool')
+                    print(f'The type of {key} is not string')
 
         # Create an empty initial collection of linked approaches.
-        self.approaches = []
+        self.approaches = [1]
 
     @property
     def fullname(self):
@@ -111,15 +113,15 @@ class NearEarthObject:
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
 
-        if self.hazardous:
+        if self.hazardous.lower() == 'y':
             return f'NEO {self.name} has a diameter of {self.diameter} km and is potentially hazardous.'
         else:
             return f'NEO {self.name} has a diameter of {self.diameter} km and is not potentially hazardous.'
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
-        return (f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, "
-                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})")
+        return (f"NearEarthObject(designation={self.designation}, name={self.name}, "
+                f"diameter={self.diameter}, hazardous={self.hazardous})")
 
 
 class CloseApproach:
@@ -150,7 +152,7 @@ class CloseApproach:
         # parse the keyword parameters
         for key, value in info.items():
             # assign the designation parameter
-            if key.lower() == 'designation':
+            if key.lower() == 'des':
                 # check the value of the parameter to avoid
                 # an inappropriate value
                 try:
@@ -161,7 +163,7 @@ class CloseApproach:
                     print(f'The type of {key} is not string')
 
             # assign the time parameter
-            elif key.lower() == 'time':
+            elif key.lower() == 'cd':
                 # check the value of the parameter to avoid
                 # an inappropriate value
                 try:
@@ -173,7 +175,7 @@ class CloseApproach:
                     print(f'The type of {key} is not string')
 
             # assign the distance parameter
-            elif key.lower() == 'distance':
+            elif key.lower() == 'dist':
                 # check the value of the parameter to avoid
                 # an inappropriate value
                 try:
@@ -184,7 +186,7 @@ class CloseApproach:
                     print(f'The type of {key} is not float')
 
             # assign the velocity parameter
-            elif key.lower() == 'velocity':
+            elif key.lower() == 'v_rel':
                 # check the value of the parameter to avoid
                 # an inappropriate value
                 try:
@@ -195,7 +197,7 @@ class CloseApproach:
                     print(f'The type of {key} is not float')
 
         # Create an attribute for the referenced NEO, originally None.
-        self.neo = None
+        self.neo = self._designation
 
     @property
     def time_str(self):
@@ -220,9 +222,12 @@ class CloseApproach:
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
+        # return f"- On {self.time}, '{self.neo}' approaches Earth at a distance of {self.distance}" \
+        #       f"au and a velocity of {self.velocity} km/s."
         return f"A CloseApproach {self._designation} = {self.distance}, velocity is {self.velocity}"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return (f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, "
                 f"velocity={self.velocity:.2f}, neo={self.neo!r})")
+

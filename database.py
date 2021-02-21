@@ -42,8 +42,43 @@ class NEODatabase:
         self._approaches = approaches
 
         # TODO: What additional auxiliary data structures will be useful?
+        # create empty dictionaries to store an information about neos in key: value format
+        # by designation
+        self.neos_dict_by_designation = {}
+        # by name
+        self.neos_dict_by_name = {}
+        # fill the dictionary (by designation)
+        for each_neo in self._neos:
+            self.neos_dict_by_designation[each_neo[3]] = {
+                'designation': f'{each_neo[3]}',
+                'name': f'{each_neo[4]}',
+                'diameter': f'{each_neo[15]}',
+                'hazardous': f'{each_neo[7]}'
+            }
+        # fill the dictionary (by name)
+        for each_neo in self._neos:
+            self.neos_dict_by_name[each_neo[4]] = {
+                'designation': f'{each_neo[3]}',
+                'name': f'{each_neo[4]}',
+                'diameter': f'{each_neo[15]}',
+                'hazardous': f'{each_neo[7]}'
+            }
+
+        self.neo = []
+
+        for cad in self._approaches:
+            self.neo = [n for n in neos if n.designation == cad.designation]
+
+        # create dictionary to store an information about approaches in key: value format
+        self.approaches_dict = {}
 
         # TODO: Link together the NEOs and their close approaches.
+        for element in self._approaches['data']:
+            self.approaches_dict[element[0]] = {
+                'time': f'{element[3]}',
+                'distance': f'{element[4]}',
+                'velocity': f'{element[7]}'
+            }
 
     def get_neo_by_designation(self, designation):
         """Find and return an NEO by its primary designation.
@@ -59,7 +94,12 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
         # TODO: Fetch an NEO by its primary designation.
-        return None
+        from models import NearEarthObject
+
+        if designation in self.neos_dict_by_designation:
+            return NearEarthObject(**self.neos_dict_by_designation[designation])
+        else:
+            return None
 
     def get_neo_by_name(self, name):
         """Find and return an NEO by its name.
@@ -76,7 +116,12 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
         # TODO: Fetch an NEO by its name.
-        return None
+        from models import NearEarthObject
+
+        if name in self.neos_dict_by_name:
+            return NearEarthObject(**self.neos_dict_by_name[name])
+        else:
+            return None
 
     def query(self, filters=()):
         """Query close approaches to generate those that match a collection of filters.
