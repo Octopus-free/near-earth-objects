@@ -9,7 +9,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/near-earth-objects.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/near-earth-objects.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +75,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613652563452</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Complete Task2a (fill the extract.py).">
+      <created>1613903697743</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1613903697743</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -93,6 +99,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Complete Task1 (fill the models.py)." />
-    <option name="LAST_COMMIT_MESSAGE" value="Complete Task1 (fill the models.py)." />
+    <MESSAGE value="Complete Task2a (fill the extract.py)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Complete Task2a (fill the extract.py)." />
   </component>
 </project>

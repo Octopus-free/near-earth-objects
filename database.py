@@ -103,8 +103,8 @@ class NEODatabase:
         # TODO: Fetch an NEO by its primary designation.
         from models import NearEarthObject
 
-        if designation in self.neos_dict_by_designation:
-            return NearEarthObject(**self.neos_dict_by_designation[designation])
+        if designation in self._designation_neo_dict:
+            return self._designation_neo_dict[designation]
         else:
             return None
 
