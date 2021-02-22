@@ -32,6 +32,7 @@ class NearEarthObject:
     initialized to an empty collection, but eventually populated in the
     `NEODatabase` constructor.
     """
+
     # TODO: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
     def __init__(self, **info):
@@ -99,13 +100,20 @@ class NearEarthObject:
                     print(f'The type of {key} is not string')
 
         # Create an empty initial collection of linked approaches.
-        self.approaches = [1]
+        self.approaches = []
+
+    def append(self, аpproach):
+        if type(аpproach) == CloseApproach:
+            self.approaches.append(аpproach)
 
     @property
     def fullname(self):
         """Return a representation of the full name of this NEO."""
         # TODO: Use self.designation and self.name to build a fullname for this object.
-        return f'{self.designation} {self.name}'
+        if len(self.name) != 0:
+            return f"'{self.designation} ({self.name})'"
+        else:
+            return f'{self.designation}'
 
     def __str__(self):
         """Return `str(self)`."""
@@ -137,6 +145,7 @@ class CloseApproach:
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
+
     # TODO: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
     def __init__(self, **info):
@@ -196,8 +205,15 @@ class CloseApproach:
                     # print the text message
                     print(f'The type of {key} is not float')
 
-        # Create an attribute for the referenced NEO, originally None.
         self.neo = self._designation
+
+    def attach(self, neo):
+        if type(neo) == NearEarthObject:
+            self.neo = neo
+
+    @property
+    def designation(self):
+        return self._designation
 
     @property
     def time_str(self):
@@ -224,10 +240,11 @@ class CloseApproach:
         # method for examples of advanced string formatting.
         # return f"- On {self.time}, '{self.neo}' approaches Earth at a distance of {self.distance}" \
         #       f"au and a velocity of {self.velocity} km/s."
-        return f"A CloseApproach {self._designation} = {self.distance}, velocity is {self.velocity}"
+
+        return f'- On {self.time}, {self.neo.fullname} approaches Earth at a distance of {round(self.distance, 2)} au' \
+               f' and velocity of {round(self.velocity, 2)} km/s.'
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return (f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, "
                 f"velocity={self.velocity:.2f}, neo={self.neo!r})")
-

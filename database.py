@@ -12,6 +12,7 @@ data on NEOs and close approaches extracted by `extract.load_neos` and
 You'll edit this file in Tasks 2 and 3.
 """
 
+
 class NEODatabase:
     """A database of near-Earth objects and their close approaches.
 
@@ -20,6 +21,7 @@ class NEODatabase:
     help fetch NEOs by primary designation or by name and to help speed up
     querying for close approaches that match criteria.
     """
+
     def __init__(self, neos, approaches):
         """Create a new `NEODatabase`.
 
@@ -49,36 +51,41 @@ class NEODatabase:
         self.neos_dict_by_name = {}
         # fill the dictionary (by designation)
         for each_neo in self._neos:
-            self.neos_dict_by_designation[each_neo[3]] = {
-                'designation': f'{each_neo[3]}',
-                'name': f'{each_neo[4]}',
-                'diameter': f'{each_neo[15]}',
-                'hazardous': f'{each_neo[7]}'
+            self.neos_dict_by_designation[each_neo.designation] = {
+                'pdes': f'{each_neo.designation}',
+                'name': f'{each_neo.name}',
+                'diameter': f'{each_neo.diameter}',
+                'pha': f'{each_neo.hazardous}'
             }
         # fill the dictionary (by name)
         for each_neo in self._neos:
-            self.neos_dict_by_name[each_neo[4]] = {
-                'designation': f'{each_neo[3]}',
-                'name': f'{each_neo[4]}',
-                'diameter': f'{each_neo[15]}',
-                'hazardous': f'{each_neo[7]}'
+            self.neos_dict_by_name[each_neo.name] = {
+                'pdes': f'{each_neo.designation}',
+                'name': f'{each_neo.name}',
+                'diameter': f'{each_neo.diameter}',
+                'pha': f'{each_neo.hazardous}'
             }
 
         self.neo = []
 
-        for cad in self._approaches:
-            self.neo = [n for n in neos if n.designation == cad.designation]
-
         # create dictionary to store an information about approaches in key: value format
-        self.approaches_dict = {}
+        self.approaches = []
 
         # TODO: Link together the NEOs and their close approaches.
-        for element in self._approaches['data']:
-            self.approaches_dict[element[0]] = {
-                'time': f'{element[3]}',
-                'distance': f'{element[4]}',
-                'velocity': f'{element[7]}'
-            }
+        # create two dictionaties for mapping
+        self._designation_neo_dict = {}
+        self._name_neo_dict = {}
+
+        # mapping neos and approaches
+        for neo in self._neos:
+            self._designation_neo_dict[neo.designation] = neo
+
+            if neo.name:
+                self._name_neo_dict[neo.name] = neo
+        for approach in self._approaches:
+            neo = self._designation_neo_dict[approach._designation]
+            approach.neo = neo
+            neo.append(approach)
 
     def get_neo_by_designation(self, designation):
         """Find and return an NEO by its primary designation.
@@ -116,12 +123,25 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
         # TODO: Fetch an NEO by its name.
-        from models import NearEarthObject
+        def get_neo_by_name(self, name):
+            """Find and return an NEO by its name.
 
-        if name in self.neos_dict_by_name:
-            return NearEarthObject(**self.neos_dict_by_name[name])
-        else:
-            return None
+            If no match is found, return `None` instead.
+
+            Not every NEO in the data set has a name. No NEOs are associated with
+            the empty string nor with the `None` singleton.
+
+            The matching is exact - check for spelling and capitalization if no
+            match is found.
+
+            :param name: The name, as a string, of the NEO to search for.
+            :return: The `NearEarthObject` with the desired name, or `None`.
+            """
+            # TODO: Fetch an NEO by its name.
+            if name in self._name_neo_dict:
+                return self._name_neo_dict[name]
+            else:
+                return None
 
     def query(self, filters=()):
         """Query close approaches to generate those that match a collection of filters.
