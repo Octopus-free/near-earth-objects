@@ -46,36 +46,11 @@ class NEODatabase:
         # TODO: What additional auxiliary data structures will be useful?
         # create empty dictionaries to store an information about neos in key: value format
         # by designation
-        self.neos_dict_by_designation = {}
-        # by name
-        self.neos_dict_by_name = {}
-        # fill the dictionary (by designation)
-        for each_neo in self._neos:
-            self.neos_dict_by_designation[each_neo.designation] = {
-                'pdes': f'{each_neo.designation}',
-                'name': f'{each_neo.name}',
-                'diameter': f'{each_neo.diameter}',
-                'pha': f'{each_neo.hazardous}'
-            }
-        # fill the dictionary (by name)
-        for each_neo in self._neos:
-            self.neos_dict_by_name[each_neo.name] = {
-                'pdes': f'{each_neo.designation}',
-                'name': f'{each_neo.name}',
-                'diameter': f'{each_neo.diameter}',
-                'pha': f'{each_neo.hazardous}'
-            }
-
-        self.neo = []
-
-        # create dictionary to store an information about approaches in key: value format
-        self.approaches = []
-
-        # TODO: Link together the NEOs and their close approaches.
-        # create two dictionaties for mapping
         self._designation_neo_dict = {}
+        # by name
         self._name_neo_dict = {}
 
+        # TODO: Link together the NEOs and their close approaches.
         # mapping neos and approaches
         for neo in self._neos:
             self._designation_neo_dict[neo.designation] = neo
@@ -83,9 +58,14 @@ class NEODatabase:
             if neo.name:
                 self._name_neo_dict[neo.name] = neo
         for approach in self._approaches:
-            neo = self._designation_neo_dict[approach._designation]
+            neo = self._designation_neo_dict[approach.designation]
             approach.neo = neo
             neo.append(approach)
+
+        self.neo = []
+
+        self.approaches = []
+
 
     def get_neo_by_designation(self, designation):
         """Find and return an NEO by its primary designation.
@@ -103,8 +83,8 @@ class NEODatabase:
         # TODO: Fetch an NEO by its primary designation.
         from models import NearEarthObject
 
-        if designation in self.neos_dict_by_designation:
-            return NearEarthObject(**self.neos_dict_by_designation[designation])
+        if designation in self._designation_neo_dict:
+            return self._designation_neo_dict[designation]
         else:
             return None
 
@@ -144,4 +124,6 @@ class NEODatabase:
         """
         # TODO: Generate `CloseApproach` objects that match all of the filters.
         for approach in self._approaches:
-            yield approach
+            flag = False in map(lambda f: f(approach), filters)
+            if not flag:
+                yield approach
