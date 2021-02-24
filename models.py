@@ -72,7 +72,7 @@ class NearEarthObject:
                         print(f'The type of {key} is not string')
                 else:
                     # if the value is none, set the value to 'None' (string)
-                    self.name = 'None'
+                    self.name = None
 
             # assign the diameter parameter
             elif key.lower() == 'diameter':
@@ -81,7 +81,7 @@ class NearEarthObject:
                 if len(value) != 0:
                     try:
                         # if the type of value is not float
-                        self.diameter = str(value)
+                        self.diameter = float(value)
                     except ValueError:
                         # print the text message
                         print(f'The type of {key} is not float')
@@ -95,6 +95,10 @@ class NearEarthObject:
                 try:
                     # if the type of value is not bool
                     self.hazardous = str(value)
+                    if self.hazardous.lower() == 'y':
+                        self.hazardous = True
+                    else:
+                        self.hazardous = False
                 except ValueError:
                     # print the text message
                     print(f'The type of {key} is not string')
@@ -106,11 +110,17 @@ class NearEarthObject:
         if type(аpproach) == CloseApproach:
             self.approaches.append(аpproach)
 
+    def serialize(self):
+        return {'designation': self.designation,
+                'name': self.name,
+                'diameter_km': self.diameter,
+                'potentially_hazardous': self.hazardous}
+
     @property
     def fullname(self):
         """Return a representation of the full name of this NEO."""
         # TODO: Use self.designation and self.name to build a fullname for this object.
-        if len(self.name) != 0:
+        if self.name is not None:
             return f"'{self.designation} ({self.name})'"
         else:
             return f'{self.designation}'
@@ -121,7 +131,7 @@ class NearEarthObject:
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
 
-        if self.hazardous.lower() == 'y':
+        if self.hazardous:
             return f'NEO {self.name} has a diameter of {self.diameter} km and is potentially hazardous.'
         else:
             return f'NEO {self.name} has a diameter of {self.diameter} km and is not potentially hazardous.'
@@ -207,9 +217,10 @@ class CloseApproach:
 
         self.neo = self._designation
 
-    def attach(self, neo):
-        if type(neo) == NearEarthObject:
-            self.neo = neo
+    def serialize(self):
+        return {'datetime_utc': datetime_to_str(self.time),
+                'distance_au': self.distance,
+                'velocity_km_s': self.velocity}
 
     @property
     def designation(self):

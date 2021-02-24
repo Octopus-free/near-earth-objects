@@ -17,6 +17,7 @@ iterator.
 You'll edit this file in Tasks 3a and 3c.
 """
 import operator
+from itertools import islice
 
 
 class UnsupportedCriterionError(NotImplementedError):
@@ -72,6 +73,35 @@ class AttributeFilter:
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
 
+class DateFilter(AttributeFilter):
+    @classmethod
+    def get(cls, approach):
+        return approach.time.date()
+
+
+class DistanceFilter(AttributeFilter):
+    @classmethod
+    def get(cls, approach):
+        return approach.distance
+
+
+class VelocityFilter(AttributeFilter):
+    @classmethod
+    def get(cls, approach):
+        return approach.velocity
+
+
+class DiameterFilter(AttributeFilter):
+    @classmethod
+    def get(cls, approach):
+        return approach.neo.diameter
+
+
+class HazardousFilter(AttributeFilter):
+    @classmethod
+    def get(cls, approach):
+        return approach.neo.hazardous
+
 def create_filters(date=None, start_date=None, end_date=None,
                    distance_min=None, distance_max=None,
                    velocity_min=None, velocity_max=None,
@@ -107,7 +137,40 @@ def create_filters(date=None, start_date=None, end_date=None,
     :return: A collection of filters for use with `query`.
     """
     # TODO: Decide how you will represent your filters.
-    return ()
+    input_filters = []
+
+    for key, value in locals().items():
+        if key.lower() == 'date' and value:
+            input_filters.append(DateFilter(operator.eq, value))
+
+        elif key.lower() == 'start_date' and value:
+            input_filters.append(DateFilter(operator.ge, value))
+
+        elif key.lower() == 'end_date' and value:
+            input_filters.append(DateFilter(operator.le, value))
+
+        elif key.lower() == 'distance_min' and value:
+            input_filters.append(DistanceFilter(operator.ge, value))
+
+        elif key.lower() == 'distance_max' and value:
+            input_filters.append(DistanceFilter(operator.le, value))
+
+        elif key.lower() == 'velocity_min' and value:
+            input_filters.append(VelocityFilter(operator.ge, value))
+
+        elif key.lower() == 'velocity_max' and value:
+            input_filters.append(VelocityFilter(operator.le, value))
+
+        elif key.lower() == 'diameter_min' and value:
+            input_filters.append(DiameterFilter(operator.ge, value))
+
+        elif key.lower() == 'diameter_max' and value:
+            input_filters.append(DiameterFilter(operator.le, value))
+
+        elif key.lower() == 'hazardous' and value is not None:
+            input_filters.append(HazardousFilter(operator.eq, value))
+
+    return input_filters
 
 
 def limit(iterator, n=None):
@@ -120,4 +183,11 @@ def limit(iterator, n=None):
     :yield: The first (at most) `n` values from the iterator.
     """
     # TODO: Produce at most `n` values from the given iterator.
-    return iterator
+    if n is None:
+        return islice(iterator, None)
+    elif n == 0:
+        return islice(iterator, None)
+    else:
+        return islice(iterator, n)
+
+
